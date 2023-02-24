@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Team\Team;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -21,6 +22,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
+        'current_team_id'
     ];
 
     /**
@@ -41,4 +43,24 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function inTeam(int $id)
+    {
+        return $this->teams()->where('id', $id)->exists();
+    }
+
+    public function haveTeam()
+    {
+        return $this->teams()->count() > 0;
+    }
+
+    public function currentTeam()
+    {
+        return $this->teams()->where('id', $this->current_team_id)->first();
+    }
+
+    public function teams()
+    {
+        return $this->belongsToMany(Team::class);
+    }
 }
