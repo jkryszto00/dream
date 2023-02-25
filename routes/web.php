@@ -29,7 +29,26 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
+Route::get('team/invite/{token}/accept', [\App\Http\Controllers\Team\InviteController::class, 'accept'])->name('teams.member.invite.accept');
+Route::post('team/invite/{token}/continue', [\App\Http\Controllers\Team\InviteController::class, 'continueWithEmail'])->name('teams.member.invite.continue');
+
+Route::get('teams/select', [\App\Http\Controllers\Team\SelectTeamController::class, 'select'])->name('teams.select');
+Route::post('teams/{team}/select', [\App\Http\Controllers\Team\SelectTeamController::class, 'selected'])->name('teams.selected');
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('team/create', [\App\Http\Controllers\Team\TeamController::class, 'create'])->name('teams.create');
+    Route::post('team', [\App\Http\Controllers\Team\TeamController::class, 'store'])->name('teams.store');
+
+    Route::middleware('haveTeam')->group(function () {
+        Route::get('team', [\App\Http\Controllers\Team\TeamController::class, 'show'])->name('teams.show');
+
+        Route::post('team/{user}/detach', [\App\Http\Controllers\Team\MemberController::class, 'detachUser'])->name('teams.members.detach');
+
+        Route::post('team/invite-member', [\App\Http\Controllers\Team\InviteController::class, 'store'])->name('teams.member.invite');
+        Route::post('team/invite/{invite}/resend', [\App\Http\Controllers\Team\InviteController::class, 'resend'])->name('teams.member.invite.resend');
+        Route::delete('team/invite/{invite}', [\App\Http\Controllers\Team\InviteController::class, 'destroy'])->name('teams.member.invite.destroy');
+    });
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
