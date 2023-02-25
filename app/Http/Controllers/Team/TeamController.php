@@ -4,19 +4,21 @@ namespace App\Http\Controllers\Team;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Team\TeamStoreRequest;
-use App\Models\Team\Team;
-use App\Models\User;
+use App\Services\Team\TeamService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class TeamController extends Controller
 {
+    public function __construct(
+        readonly private TeamService $teamService
+    ){}
+
     public function show(Request $request)
     {
         $team = $request->user()->currentTeam();
 
-        $members = $team->members;
-        $invites = $team->invites;
+        $members = $team->getRelationValue('members');
+        $invites = $team->getRelationValue('invites');
 
         return inertia('Team/Show', [
             'members' => $members,
@@ -31,36 +33,13 @@ class TeamController extends Controller
 
     public function store(TeamStoreRequest $request)
     {
-        $user = $request->user();
+        $owner = $request->user();
 
-        DB::transaction(function () use ($user, $request) {
-            $team = Team::create([
-                ...$request->validated(),
-                'user_id' => $user->getKey()
-            ]);
-
-            $team->members()->attach($user);
-
-            $user->update([
-                'current_team_id' => $team->id
-            ]);
-        });
+        $this->teamService->store(
+            name: $request->validated('name'),
+            owner: $owner
+        );
 
         return redirect()->route('dashboard');
-    }
-
-    public function edit()
-    {
-
-    }
-
-    public function update()
-    {
-
-    }
-
-    public function destroy()
-    {
-
     }
 }

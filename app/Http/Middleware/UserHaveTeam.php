@@ -15,8 +15,14 @@ class UserHaveTeam
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->user()->haveTeam()) {
+        $user = $request->user();
+
+        if ($user->currentTeam()) {
             return $next($request);
+        }
+
+        if ($user->haveTeam()) {
+            return redirect()->route('teams.select');
         }
 
         return redirect()->route('teams.create');
