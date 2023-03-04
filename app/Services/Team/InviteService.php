@@ -76,6 +76,8 @@ class InviteService
             teamName: $team->getAttribute('name'),
             token: $invite->getAttribute('token')
         ));
+
+        $invite->touch();
     }
 
     public function delete(Invite $invite): void
