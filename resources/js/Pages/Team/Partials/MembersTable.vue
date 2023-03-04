@@ -118,8 +118,11 @@ const closeModal = () => {
                                     <span class="block text-sm text-gray-500">{{ member.email }}</span>
                                 </td>
                                 <td class="py-2 text-center">
-                                    <span class="px-2 py-0.5 rounded bg-indigo-100 text-indigo-500">
+                                    <span v-if="member.isOwner" class="px-2 py-0.5 rounded bg-indigo-100 text-indigo-500">
                                         Owner
+                                    </span>
+                                    <span v-else class="px-2 py-0.5 rounded bg-gray-100 text-gray-500">
+                                        Member
                                     </span>
                                 </td>
                                 <td class="py-2 text-right">

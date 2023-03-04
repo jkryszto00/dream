@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Team;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Team\TeamStoreRequest;
+use App\Http\Resources\InviteResource;
+use App\Http\Resources\MemberResource;
 use App\Services\Team\TeamService;
 use Illuminate\Http\Request;
 
@@ -21,8 +23,8 @@ class TeamController extends Controller
         $invites = $team->getRelationValue('invites');
 
         return inertia('Team/Show', [
-            'members' => $members,
-            'invites' => $invites
+            'members' => MemberResource::collection($members),
+            'invites' => InviteResource::collection($invites)
         ]);
     }
 

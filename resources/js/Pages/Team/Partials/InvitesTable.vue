@@ -26,9 +26,8 @@ defineProps({
                     <thead class="border-b">
                         <tr>
                             <th class="py-2 text-left">Address email</th>
-                            <th class="py-2 text-center">Role</th>
                             <th class="py-2 text-center">Sent at</th>
-                            <th class="py-2">&nbsp;</th>
+                            <th class="py-2">&nbsp</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -38,13 +37,8 @@ defineProps({
                                     <div class="text-gray-700">{{ invite.email }}</div>
                                 </td>
                                 <td class="py-2 text-center">
-                                <span class="px-2 py-0.5 rounded bg-indigo-100 text-indigo-500">
-                                    Member
-                                </span>
-                                </td>
-                                <td class="py-2 text-center">
                                     <div class="text-gray-500">
-                                        {{ invite.updated_at }}
+                                        {{ invite.updated_at.humanDiff }}
                                     </div>
                                 </td>
                                 <td class="py-2 text-right">
